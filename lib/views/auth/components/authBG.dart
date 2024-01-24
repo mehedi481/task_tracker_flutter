@@ -21,7 +21,7 @@ class AuthBG extends StatelessWidget {
             children: [
               Container(
                 width: 360.w,
-                height: 180.h,
+                height: 160.h,
                 clipBehavior: Clip.antiAlias,
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
@@ -65,7 +65,7 @@ class AuthBG extends StatelessWidget {
               )
             ],
           ),
-          Gap(28.h),
+          Gap(20.h),
           Expanded(
               child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.w),

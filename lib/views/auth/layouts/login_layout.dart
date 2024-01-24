@@ -6,16 +6,18 @@ import 'package:gap/gap.dart';
 import 'package:task_tracker_flutter/components/custom_button.dart';
 import 'package:task_tracker_flutter/config/app_color.dart';
 import 'package:task_tracker_flutter/config/app_text.dart';
+import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
+import 'package:task_tracker_flutter/routes.dart';
 import 'package:task_tracker_flutter/views/auth/components/authBG.dart';
 
-class SignInLayout extends StatefulWidget {
-  const SignInLayout({super.key});
+class LogInLayout extends StatefulWidget {
+  const LogInLayout({super.key});
 
   @override
-  State<SignInLayout> createState() => _SignInLayoutState();
+  State<LogInLayout> createState() => _LogInLayoutState();
 }
 
-class _SignInLayoutState extends State<SignInLayout> {
+class _LogInLayoutState extends State<LogInLayout> {
   final _formKey = GlobalKey<FormBuilderState>();
   @override
   Widget build(BuildContext context) {
@@ -88,7 +90,7 @@ class _SignInLayoutState extends State<SignInLayout> {
                   Gap(4.w),
                   InkWell(
                     onTap: () {
-                      print("Sign up");
+                      context.nav.pushNamed(Routes.signUp);
                     },
                     child: Text(
                       "Sign up",

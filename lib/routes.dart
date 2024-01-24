@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:task_tracker_flutter/views/auth/signIn_view.dart';
+import 'package:task_tracker_flutter/views/auth/layouts/signUp_layout.dart';
+import 'package:task_tracker_flutter/views/auth/login_view.dart';
+import 'package:task_tracker_flutter/views/auth/signUp_view.dart';
 import 'package:task_tracker_flutter/views/splash/splash_view.dart';
 
 class Routes {
   Routes._();
   static const String splash = '/';
-  static const String signIn = '/signIn';
+  static const String logIn = '/signIn';
+  static const String signUp = '/signUp';
 }
 
 Route generatedRoutes(RouteSettings settings) {
@@ -16,8 +19,11 @@ Route generatedRoutes(RouteSettings settings) {
     case Routes.splash:
       child = const SplashView();
       break;
-    case Routes.signIn:
-      child = const SignInView();
+    case Routes.logIn:
+      child = const LoginView();
+      break;
+    case Routes.signUp:
+      child = const SignUpView();
       break;
 
     default:

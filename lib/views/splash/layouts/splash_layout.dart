@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:task_tracker_flutter/config/app_images.dart';
@@ -17,7 +16,7 @@ class _SplashLayoutState extends State<SplashLayout> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, Routes.signIn);
+      Navigator.pushReplacementNamed(context, Routes.logIn);
     });
   }
 
