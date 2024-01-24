@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:task_tracker_flutter/config/app_images.dart';
-import 'package:task_tracker_flutter/routes.dart';
-import 'package:task_tracker_flutter/views/splash/layouts/components/splashBG.dart';
+import 'package:task_tracker_flutter/utils/routes.dart';
+import 'package:task_tracker_flutter/views/splash/components/splashBG.dart';
 
 class SplashLayout extends StatefulWidget {
   const SplashLayout({super.key});

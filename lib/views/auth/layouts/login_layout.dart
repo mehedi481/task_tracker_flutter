@@ -7,7 +7,7 @@ import 'package:task_tracker_flutter/components/custom_button.dart';
 import 'package:task_tracker_flutter/config/app_color.dart';
 import 'package:task_tracker_flutter/config/app_text.dart';
 import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
-import 'package:task_tracker_flutter/routes.dart';
+import 'package:task_tracker_flutter/utils/routes.dart';
 import 'package:task_tracker_flutter/views/auth/components/authBG.dart';
 
 class LogInLayout extends StatefulWidget {
@@ -75,9 +75,10 @@ class _LogInLayoutState extends State<LogInLayout> {
               Gap(28.h),
               CustomButton(
                 onPressed: () {
-                  if (_formKey.currentState!.saveAndValidate()) {
-                    print(_formKey.currentState!.value);
-                  }
+                  // if (_formKey.currentState!.saveAndValidate()) {
+                  //   print(_formKey.currentState!.value);
+                  // }
+                  context.nav.pushNamed(Routes.core);
                 },
                 text: "Sign in",
               ),
