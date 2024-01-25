@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:task_tracker_flutter/config/app_color.dart';
 import 'package:task_tracker_flutter/config/app_images.dart';
 import 'package:task_tracker_flutter/controller/misc/misc_provider.dart';
+import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
+import 'package:task_tracker_flutter/utils/routes.dart';
 import 'package:task_tracker_flutter/views/core/components/navigation_item.dart';
 import 'package:task_tracker_flutter/views/home/home_view.dart';
 import 'package:task_tracker_flutter/views/profile/profile_view.dart';
@@ -67,6 +70,26 @@ class CoreLayout extends ConsumerWidget {
           ),
         ),
       ),
+      floatingActionButton: ref.watch(selectedIndexProvider) != 2
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                context.nav.pushNamed(Routes.addTask);
+              },
+              label: Text(
+                'Add Task',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              icon: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+              backgroundColor: AppColor.primaryColor,
+            )
+          : const SizedBox.shrink(),
     );
   }
 }

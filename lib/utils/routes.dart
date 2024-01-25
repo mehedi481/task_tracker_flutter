@@ -4,6 +4,8 @@ import 'package:task_tracker_flutter/views/auth/login_view.dart';
 import 'package:task_tracker_flutter/views/auth/signUp_view.dart';
 import 'package:task_tracker_flutter/views/core/core_view.dart';
 import 'package:task_tracker_flutter/views/splash/splash_view.dart';
+import 'package:task_tracker_flutter/views/task/components/add_task.dart';
+import 'package:task_tracker_flutter/views/task/components/update_task.dart';
 
 class Routes {
   Routes._();
@@ -11,6 +13,8 @@ class Routes {
   static const String logIn = '/signIn';
   static const String signUp = '/signUp';
   static const String core = '/core';
+  static const String addTask = '/addTask';
+  static const String updateTask = '/updateTask';
 }
 
 Route generatedRoutes(RouteSettings settings) {
@@ -28,6 +32,17 @@ Route generatedRoutes(RouteSettings settings) {
       break;
     case Routes.core:
       child = const CoreView();
+      break;
+    case Routes.addTask:
+      child = const AddTask();
+      break;
+    case Routes.updateTask:
+      final data = settings.arguments as Map<String, dynamic>;
+      child = UpdateTask(
+        title: data['title'],
+        description: data['description'],
+        isComplete: data['isComplete'],
+      );
       break;
 
     default:

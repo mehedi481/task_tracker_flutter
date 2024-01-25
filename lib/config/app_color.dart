@@ -8,4 +8,6 @@ class AppColor {
   static const borderColor = Color(0xFFE9E9E9);
   static const whiteColor = Color(0xFFFFFFFF);
   static const redColor = Color(0xFFE74C3C);
+  static const inCompleteColor = Color(0xFFFBBC04);
+  static const completeColor = Color(0xFF61E064);
 }
