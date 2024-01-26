@@ -6,6 +6,9 @@ class AppImage {
   static const String background = 'assets/pngs/background.png';
   static const String headerBG = 'assets/pngs/headerBG.png';
   static const String backIcon = 'assets/pngs/backIcon.png';
+  static const String summery1 = 'assets/pngs/summery1.png';
+  static const String summery2 = 'assets/pngs/summery2.png';
+
 
   // svgs
   static const String home = 'assets/svgs/house.svg';

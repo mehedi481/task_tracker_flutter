@@ -3,6 +3,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:task_tracker_flutter/views/auth/login_view.dart';
 import 'package:task_tracker_flutter/views/auth/signUp_view.dart';
 import 'package:task_tracker_flutter/views/core/core_view.dart';
+import 'package:task_tracker_flutter/views/profile/components/profile_update.dart';
 import 'package:task_tracker_flutter/views/splash/splash_view.dart';
 import 'package:task_tracker_flutter/views/task/components/add_task.dart';
 import 'package:task_tracker_flutter/views/task/components/update_task.dart';
@@ -15,6 +16,7 @@ class Routes {
   static const String core = '/core';
   static const String addTask = '/addTask';
   static const String updateTask = '/updateTask';
+  static const String profileDetails = '/profileDetails';
 }
 
 Route generatedRoutes(RouteSettings settings) {
@@ -43,6 +45,9 @@ Route generatedRoutes(RouteSettings settings) {
         description: data['description'],
         isComplete: data['isComplete'],
       );
+      break;
+    case Routes.profileDetails:
+      child = const ProfileUpdate();
       break;
 
     default:
