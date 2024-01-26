@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:task_tracker_flutter/config/app_color.dart';
 import 'package:task_tracker_flutter/config/app_text.dart';
+import 'package:task_tracker_flutter/controllers/task_controller/providers.dart';
 import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
 import 'package:task_tracker_flutter/utils/routes.dart';
 
@@ -31,8 +33,9 @@ class _TaskCardState extends State<TaskCard> {
     return InkWell(
       onTap: () {
         context.nav.pushNamed(Routes.updateTask, arguments: {
-          "title": "Update",
-          "description": "Lorem ipsum dolor sit amet",
+          "id": widget.id,
+          "title": "asdfasd",
+          "description": widget.description,
           "isComplete": widget.isComplete,
         });
       },
@@ -95,35 +98,52 @@ class _TaskCardState extends State<TaskCard> {
                   )
                 ],
               ),
-              InkWell(
-                onTap: () {
-                  // setState(() {
-                  //   widget.isComplete = !widget.isComplete;
-                  // });
-                  print('id: ${widget.id}');
-                },
-                child: Container(
-                  height: 20,
-                  width: 30,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                        color: widget.isComplete
-                            ? Colors.transparent
-                            : Colors.black),
-                    color: widget.isComplete
-                        ? Colors.green
-                        : Colors.grey.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: widget.isComplete
-                      ? const Icon(
-                          Icons.check,
-                          color: Colors.white,
-                          size: 15,
+              Consumer(builder: (context, ref, _) {
+                final isLoading =
+                    ref.watch(updateTaskControllerProvider(widget.id));
+                return InkWell(
+                  onTap: () {
+                    ref
+                        .read(updateTaskControllerProvider(widget.id).notifier)
+                        .updateTask(isComplete: !widget.isComplete)
+                        .then((value) {
+                      if (value) {
+                        ref.invalidate(allTaskControllerProvider);
+                        setState(() {
+                          widget.isComplete = !widget.isComplete;
+                        });
+                      }
+                    });
+                  },
+                  child: isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(),
                         )
-                      : null,
-                ),
-              )
+                      : Container(
+                          height: 20,
+                          width: 30,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: widget.isComplete
+                                    ? Colors.transparent
+                                    : Colors.black),
+                            color: widget.isComplete
+                                ? Colors.green
+                                : Colors.grey.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: widget.isComplete
+                              ? const Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 15,
+                                )
+                              : null,
+                        ),
+                );
+              })
             ],
           ),
           const SizedBox(height: 10),

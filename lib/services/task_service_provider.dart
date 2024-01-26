@@ -12,6 +12,12 @@ abstract class TaskRepository {
     required String description,
     required String dueDate,
   });
+  Future<Response> updateTask({
+    required String id,
+    required bool isComplete,
+  });
+  Future<Response> getTaskByCompleteStatus({required bool isComplete});
+  Future<Response> deleteTask({required String id});
 }
 
 class TaskService implements TaskRepository {
@@ -36,6 +42,30 @@ class TaskService implements TaskRepository {
       "description": description,
       "dueDate": dueDate,
     });
+    return response;
+  }
+
+  @override
+  Future<Response> updateTask({required String id, required bool isComplete}) {
+    final response =
+        ref.read(apiClientProvider).put("${AppConstants.task}/$id", data: {
+      "completed": isComplete,
+    });
+    return response;
+  }
+
+  @override
+  Future<Response> getTaskByCompleteStatus({required bool isComplete}) {
+    final response = ref.read(apiClientProvider).get(AppConstants.task, query: {
+      "completed": isComplete,
+    });
+    return response;
+  }
+
+  @override
+  Future<Response> deleteTask({required String id}) {
+    final response =
+        ref.read(apiClientProvider).delete("${AppConstants.task}/$id");
     return response;
   }
 }

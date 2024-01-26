@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:task_tracker_flutter/config/app_color.dart';
 import 'package:task_tracker_flutter/config/app_text.dart';
+import 'package:task_tracker_flutter/controllers/task_controller/providers.dart';
+import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
+import 'package:task_tracker_flutter/utils/utils.dart';
 
+// ignore: must_be_immutable
 class UpdateTask extends StatefulWidget {
   UpdateTask({
     Key? key,
+    required this.id,
     required this.title,
     required this.description,
     required this.isComplete,
   }) : super(key: key);
-
+  final String id;
   final String title;
   final String description;
   bool isComplete;
@@ -81,9 +87,12 @@ class _UpdateTaskState extends State<UpdateTask> {
                                 },
                                 child: Row(
                                   children: [
-                                    Text(
-                                      _titleController.text.toString(),
-                                      style: AppTextStyle.title,
+                                    Expanded(
+                                      child: Text(
+                                        _titleController.text.toString(),
+                                        style: AppTextStyle.title,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
                                     IconButton(
                                       icon: const Icon(Icons.edit),
@@ -147,30 +156,53 @@ class _UpdateTaskState extends State<UpdateTask> {
                 ],
               ),
             ),
-            InkWell(
-              onTap: () {},
-              child: Container(
-                height: 20,
-                width: 30,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color:
-                        widget.isComplete ? Colors.transparent : Colors.black,
-                  ),
-                  color: widget.isComplete
-                      ? Colors.green
-                      : Colors.grey.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: widget.isComplete
-                    ? const Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 15,
+            Consumer(builder: (context, ref, _) {
+              final isLoading = ref.watch(updateTaskControllerProvider(
+                widget.id,
+              ));
+              return InkWell(
+                onTap: () {
+                  ref
+                      .read(updateTaskControllerProvider(widget.id).notifier)
+                      .updateTask(isComplete: !widget.isComplete)
+                      .then((value) {
+                    if (value) {
+                      ref.invalidate(allTaskControllerProvider);
+                      setState(() {
+                        widget.isComplete = !widget.isComplete;
+                      });
+                    }
+                  });
+                },
+                child: isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(),
                       )
-                    : null,
-              ),
-            )
+                    : Container(
+                        height: 20,
+                        width: 30,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: widget.isComplete
+                                  ? Colors.transparent
+                                  : Colors.black),
+                          color: widget.isComplete
+                              ? Colors.green
+                              : Colors.grey.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: widget.isComplete
+                            ? const Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 15,
+                              )
+                            : null,
+                      ),
+              );
+            })
           ],
         ),
       ),
@@ -213,47 +245,70 @@ class _UpdateTaskState extends State<UpdateTask> {
             ),
             Align(
               alignment: Alignment.centerRight,
-              child: Container(
-                width: 122.w,
-                height: 32.h,
-                margin: const EdgeInsets.all(10),
-                alignment: Alignment.center,
-                decoration: ShapeDecoration(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(width: 1, color: Color(0xFF808080)),
-                    borderRadius: BorderRadius.circular(28.r),
-                  ),
-                ),
-                child: InkWell(
-                  onTap: () {
-                    // Handle your tap event here.
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Delete Task',
-                        style: TextStyle(
-                          color: const Color(0xFF808080),
-                          fontSize: 14.sp,
-                          fontFamily: 'Manrope',
-                          fontWeight: FontWeight.w500,
-                          height: 0,
+              child: Consumer(builder: (context, ref, _) {
+                final isLoading =
+                    ref.watch(deleteTaskControllerProvider(widget.id));
+                return isLoading
+                    ? Container(
+                        width: 30.w,
+                        height: 30.h,
+                        margin: const EdgeInsets.all(10),
+                        child: const CircularProgressIndicator())
+                    : Container(
+                        width: 122.w,
+                        height: 32.h,
+                        margin: const EdgeInsets.all(10),
+                        alignment: Alignment.center,
+                        decoration: ShapeDecoration(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                                width: 1, color: Color(0xFF808080)),
+                            borderRadius: BorderRadius.circular(28.r),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 6),
-                      const Icon(
-                        Icons.delete_outline,
-                        color: Color(0xFF808080),
-                        size: 16,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                        child: InkWell(
+                          onTap: () {
+                            ref
+                                .read(deleteTaskControllerProvider(widget.id)
+                                    .notifier)
+                                .deleteTask()
+                                .then((value) {
+                              if (value) {
+                                Utils.showCustomSnackbar(
+                                    message: "Task successfully delete",
+                                    isSuccess: true);
+                                ref.invalidate(allTaskControllerProvider);
+                                context.nav.pop();
+                              }
+                            });
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Delete Task',
+                                style: TextStyle(
+                                  color: const Color(0xFF808080),
+                                  fontSize: 14.sp,
+                                  fontFamily: 'Manrope',
+                                  fontWeight: FontWeight.w500,
+                                  height: 0,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              const Icon(
+                                Icons.delete_outline,
+                                color: Color(0xFF808080),
+                                size: 16,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+              }),
             )
           ],
         ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:task_tracker_flutter/config/app_color.dart';
 import 'package:task_tracker_flutter/config/app_images.dart';
 import 'package:task_tracker_flutter/config/app_text.dart';
+import 'package:task_tracker_flutter/controllers/task_controller/providers.dart';
 
 class TaskSummery extends StatelessWidget {
   const TaskSummery({super.key});
@@ -45,12 +47,26 @@ class TaskSummery extends StatelessWidget {
                         fontSize: 12.sp,
                       ),
                     ),
-                    Text(
-                      '0',
-                      style: AppTextStyle.largeTitle.copyWith(
-                        fontSize: 24.sp,
-                      ),
-                    ),
+                    Consumer(builder: (context, ref, _) {
+                      final isLoading =
+                          ref.watch(getTaskByStatusControllerProvider);
+                      return isLoading
+                          ? SizedBox(
+                              height: 30.h,
+                              width: 30.h,
+                              child: const CircularProgressIndicator(),
+                            )
+                          : Text(
+                              ref
+                                  .watch(getTaskByStatusControllerProvider
+                                      .notifier)
+                                  .inCompleteTaskCount
+                                  .toString(),
+                              style: AppTextStyle.largeTitle.copyWith(
+                                fontSize: 24.sp,
+                              ),
+                            );
+                    }),
                   ],
                 ),
               ),
@@ -77,12 +93,26 @@ class TaskSummery extends StatelessWidget {
                         fontSize: 12.sp,
                       ),
                     ),
-                    Text(
-                      '0',
-                      style: AppTextStyle.largeTitle.copyWith(
-                        fontSize: 24.sp,
-                      ),
-                    ),
+                    Consumer(builder: (context, ref, _) {
+                      final isLoading =
+                          ref.watch(getTaskByStatusControllerProvider);
+                      return isLoading
+                          ? SizedBox(
+                              height: 30.h,
+                              width: 30.h,
+                              child: const CircularProgressIndicator(),
+                            )
+                          : Text(
+                              ref
+                                  .watch(getTaskByStatusControllerProvider
+                                      .notifier)
+                                  .completeTaskCount
+                                  .toString(),
+                              style: AppTextStyle.largeTitle.copyWith(
+                                fontSize: 24.sp,
+                              ),
+                            );
+                    }),
                   ],
                 ),
               ),

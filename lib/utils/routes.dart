@@ -41,6 +41,7 @@ Route generatedRoutes(RouteSettings settings) {
     case Routes.updateTask:
       final data = settings.arguments as Map<String, dynamic>;
       child = UpdateTask(
+        id: data['id'],
         title: data['title'],
         description: data['description'],
         isComplete: data['isComplete'],

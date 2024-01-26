@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:task_tracker_flutter/controllers/task_controller/providers.dart';
 import 'package:task_tracker_flutter/models/task_model.dart';
 import 'package:task_tracker_flutter/services/task_service_provider.dart';
 
@@ -17,8 +19,9 @@ class AllTaskController extends StateNotifier<bool> {
       final response = await ref.read(taskServiceProvider).getAllTask();
       if (response.statusCode == 200) {
         List<dynamic> list = response.data['data'];
-        _taskList = [];
-        _taskList = list.map((value) => TaskModel.fromMap(value)).toList();
+        _taskList = await compute(parseTaskList, list);
+        // for refreshing summary task count
+        ref.invalidate(getTaskByStatusControllerProvider);
       }
     } catch (e) {
       rethrow;
@@ -26,4 +29,8 @@ class AllTaskController extends StateNotifier<bool> {
       state = false;
     }
   }
+}
+
+List<TaskModel> parseTaskList(List<dynamic> list) {
+  return list.map((value) => TaskModel.fromMap(value)).toList();
 }
