@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:task_tracker_flutter/config/app_constants.dart';
 import 'package:task_tracker_flutter/config/app_images.dart';
+import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
 import 'package:task_tracker_flutter/utils/routes.dart';
 import 'package:task_tracker_flutter/views/splash/components/splashBG.dart';
 
@@ -15,8 +18,19 @@ class _SplashLayoutState extends State<SplashLayout> {
   @override
   void initState() {
     super.initState();
+    Box authBox = Hive.box(AppConstants.authBox);
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, Routes.logIn);
+      if (authBox.get(AppConstants.authToken) != null) {
+        context.nav.pushNamedAndRemoveUntil(
+          Routes.core,
+          (route) => false,
+        );
+      } else {
+        context.nav.pushNamedAndRemoveUntil(
+          Routes.logIn,
+          (route) => false,
+        );
+      }
     });
   }
 

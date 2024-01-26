@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:task_tracker_flutter/config/app_color.dart';
 import 'package:task_tracker_flutter/config/app_images.dart';
-import 'package:task_tracker_flutter/controller/misc/misc_provider.dart';
+import 'package:task_tracker_flutter/controllers/misc/misc_provider.dart';
 import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
 import 'package:task_tracker_flutter/utils/routes.dart';
 import 'package:task_tracker_flutter/views/core/components/navigation_item.dart';

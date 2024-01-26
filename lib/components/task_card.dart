@@ -6,10 +6,26 @@ import 'package:task_tracker_flutter/config/app_text.dart';
 import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
 import 'package:task_tracker_flutter/utils/routes.dart';
 
-class TaskCard extends StatelessWidget {
-  TaskCard({super.key, this.isComplete = true});
+class TaskCard extends StatefulWidget {
+  TaskCard({
+    super.key,
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.date,
+    required this.isComplete,
+  });
+  String id;
   bool isComplete;
+  String title;
+  String date;
+  String description;
 
+  @override
+  State<TaskCard> createState() => _TaskCardState();
+}
+
+class _TaskCardState extends State<TaskCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -17,7 +33,7 @@ class TaskCard extends StatelessWidget {
         context.nav.pushNamed(Routes.updateTask, arguments: {
           "title": "Update",
           "description": "Lorem ipsum dolor sit amet",
-          "isComplete": isComplete,
+          "isComplete": widget.isComplete,
         });
       },
       child: Container(
@@ -26,8 +42,8 @@ class TaskCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(14.r),
-          border:
-              Border.all(color: isComplete ? Colors.green : Colors.transparent),
+          border: Border.all(
+              color: widget.isComplete ? Colors.green : Colors.transparent),
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(
@@ -36,7 +52,7 @@ class TaskCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Title", style: AppTextStyle.title),
+                  Text(widget.title, style: AppTextStyle.title),
                   Gap(5.h),
                   Row(
                     children: [
@@ -46,7 +62,7 @@ class TaskCard extends StatelessWidget {
                       ),
                       Gap(3.w),
                       Text(
-                        "20 Jan 2021",
+                        widget.date,
                         style: AppTextStyle.smallBody,
                       ),
                       Gap(5.w),
@@ -54,12 +70,12 @@ class TaskCard extends StatelessWidget {
                         padding: EdgeInsets.symmetric(
                             horizontal: 5.w, vertical: 2.h),
                         decoration: BoxDecoration(
-                          color: isComplete
+                          color: widget.isComplete
                               ? const Color(0xffEFFFEF)
                               : const Color(0xffFFFAEC),
                           borderRadius: BorderRadius.all(Radius.circular(10.r)),
                         ),
-                        child: isComplete
+                        child: widget.isComplete
                             ? Text(
                                 "Complete",
                                 style: AppTextStyle.smallBody.copyWith(
@@ -80,19 +96,26 @@ class TaskCard extends StatelessWidget {
                 ],
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  // setState(() {
+                  //   widget.isComplete = !widget.isComplete;
+                  // });
+                  print('id: ${widget.id}');
+                },
                 child: Container(
                   height: 20,
                   width: 30,
                   decoration: BoxDecoration(
                     border: Border.all(
-                        color: isComplete ? Colors.transparent : Colors.black),
-                    color: isComplete
+                        color: widget.isComplete
+                            ? Colors.transparent
+                            : Colors.black),
+                    color: widget.isComplete
                         ? Colors.green
                         : Colors.grey.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: isComplete
+                  child: widget.isComplete
                       ? const Icon(
                           Icons.check,
                           color: Colors.white,
@@ -105,7 +128,7 @@ class TaskCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut nisl quis nunc aliquam aliquet. Sed ut nisl quis nunc aliquam aliquet.",
+            widget.description,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: AppTextStyle.normalBody,

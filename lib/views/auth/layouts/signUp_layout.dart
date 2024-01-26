@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:task_tracker_flutter/components/custom_button.dart';
 import 'package:task_tracker_flutter/config/app_color.dart';
 import 'package:task_tracker_flutter/config/app_text.dart';
+import 'package:task_tracker_flutter/controllers/auth_controller/providers.dart';
+import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
+import 'package:task_tracker_flutter/utils/routes.dart';
+import 'package:task_tracker_flutter/utils/utils.dart';
 import 'package:task_tracker_flutter/views/auth/components/authBG.dart';
 
 class SignUpLayout extends StatefulWidget {
@@ -106,17 +111,46 @@ class _SignUpLayoutState extends State<SignUpLayout> {
                 ),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
+                  (val) {
+                    if (_formKey.currentState!.fields['password']!.value !=
+                        val) {
+                      return "Password and ReType Password must be same";
+                    }
+                    return null;
+                  },
                 ]),
               ),
               Gap(28.h),
-              CustomButton(
-                onPressed: () {
-                  if (_formKey.currentState!.saveAndValidate()) {
-                    print(_formKey.currentState!.value);
-                  }
-                },
-                text: "Sign Up",
-              ),
+              Consumer(builder: (context, ref, _) {
+                final isLoading = ref.watch(registerControllerProvider);
+                return isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : CustomButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.saveAndValidate()) {
+                            final data = _formKey.currentState!.value;
+                            ref
+                                .read(registerControllerProvider.notifier)
+                                .register(
+                                  name: data['name'],
+                                  email: data['email'],
+                                  password: data['password'],
+                                )
+                                .then((value) {
+                              if (value) {
+                                context.nav.pushNamedAndRemoveUntil(
+                                  Routes.core,
+                                  (route) => false,
+                                );
+                              }
+                            });
+                          }
+                        },
+                        text: "Sign Up",
+                      );
+              }),
               Gap(28.h),
             ],
           ),
