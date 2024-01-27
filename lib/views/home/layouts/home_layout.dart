@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:task_tracker_flutter/config/app_text.dart';
+import 'package:task_tracker_flutter/controllers/profile_controller.dart/providers.dart';
 import 'package:task_tracker_flutter/views/home/components/task_section.dart';
 import 'package:task_tracker_flutter/views/home/components/task_summery.dart';
 import 'package:task_tracker_flutter/views/home/components/welcome_section.dart';
@@ -12,6 +12,7 @@ class HomeLayout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(profileDataControllerProvider);
     return Scaffold(
       body: SafeArea(
         child: Padding(

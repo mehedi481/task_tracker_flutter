@@ -10,7 +10,6 @@ import 'package:task_tracker_flutter/config/app_text.dart';
 import 'package:task_tracker_flutter/controllers/auth_controller/providers.dart';
 import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
 import 'package:task_tracker_flutter/utils/routes.dart';
-import 'package:task_tracker_flutter/utils/utils.dart';
 import 'package:task_tracker_flutter/views/auth/components/authBG.dart';
 
 class SignUpLayout extends StatefulWidget {

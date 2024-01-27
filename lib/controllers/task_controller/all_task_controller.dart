@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:task_tracker_flutter/controllers/misc/misc_provider.dart';
 import 'package:task_tracker_flutter/controllers/task_controller/providers.dart';
 import 'package:task_tracker_flutter/models/task_model.dart';
 import 'package:task_tracker_flutter/services/task_service_provider.dart';

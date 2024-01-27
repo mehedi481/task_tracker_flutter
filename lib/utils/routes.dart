@@ -48,7 +48,10 @@ Route generatedRoutes(RouteSettings settings) {
       );
       break;
     case Routes.profileDetails:
-      child = const ProfileUpdate();
+      final data = settings.arguments as Map<String, dynamic>;
+      child = ProfileUpdate(
+        userData: data['userData'],
+      );
       break;
 
     default:

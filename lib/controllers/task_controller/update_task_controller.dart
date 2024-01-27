@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:task_tracker_flutter/controllers/task_controller/providers.dart';
 import 'package:task_tracker_flutter/services/task_service_provider.dart';
 
 class UpdateTaskController extends StateNotifier<bool> {

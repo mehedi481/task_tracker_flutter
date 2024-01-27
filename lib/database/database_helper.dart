@@ -119,6 +119,28 @@ class DatabaseHelper {
     }
   }
 
+  //update user
+  Future<int> updateUser(UserModel user) async {
+    try {
+      Database db = await database;
+      final data = {
+        columnId: user.id,
+        columnName: user.name,
+        columnEmail: user.email,
+        columnAge: user.age,
+      };
+      return await db.update(
+        AppConstants.userTable,
+        data,
+        where: '$columnId = ?',
+        whereArgs: [user.id],
+      );
+    } catch (e) {
+      debugPrint('Error updating user: $e');
+      return -1;
+    }
+  }
+
   Future<void> insertUserToken(String token) async {
     try {
       Database db = await database;

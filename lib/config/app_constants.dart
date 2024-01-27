@@ -5,6 +5,8 @@ class AppConstants {
   static const String login = '$baseUrl/user/login';
   static const String register = '$baseUrl/user/register';
   static const String logout = '$baseUrl/user/logout';
+  static const String profileUpdate = '$baseUrl/user/me';
+  static const String profileImageUpdate = '$baseUrl/user/me/avatar';
   // task based
   static const String task = '$baseUrl/task';
 

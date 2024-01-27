@@ -7,7 +7,6 @@ import 'package:gap/gap.dart';
 import 'package:task_tracker_flutter/components/custom_button.dart';
 import 'package:task_tracker_flutter/config/app_color.dart';
 import 'package:task_tracker_flutter/config/app_text.dart';
-import 'package:task_tracker_flutter/controllers/auth_controller/providers.dart';
 import 'package:task_tracker_flutter/controllers/misc/misc_provider.dart';
 import 'package:task_tracker_flutter/controllers/task_controller/providers.dart';
 import 'package:task_tracker_flutter/extensions/context_less_nav.dart';

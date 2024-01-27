@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:task_tracker_flutter/config/app_color.dart';
 import 'package:task_tracker_flutter/config/app_text.dart';
+import 'package:task_tracker_flutter/controllers/profile_controller.dart/providers.dart';
 import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
+import 'package:task_tracker_flutter/models/user_model.dart';
 import 'package:task_tracker_flutter/utils/routes.dart';
 
-class ProfileTab extends StatelessWidget {
+class ProfileTab extends ConsumerWidget {
   const ProfileTab({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(profileDataControllerProvider);
+    final UserModel? userData =
+        ref.watch(profileDataControllerProvider.notifier).userData;
+
+    if (userData == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -22,7 +35,9 @@ class ProfileTab extends StatelessWidget {
         type: MaterialType.transparency,
         child: InkWell(
           onTap: () {
-            context.nav.pushNamed(Routes.profileDetails);
+            context.nav.pushNamed(Routes.profileDetails, arguments: {
+              'userData': userData,
+            });
           },
           borderRadius: BorderRadius.circular(12.r),
           child: Container(
@@ -71,14 +86,14 @@ class ProfileTab extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'John Doe',
+                            userData.name,
                             style: AppTextStyle.largeTitle.copyWith(
                               fontSize: 24.sp,
                             ),
                           ),
                           Gap(4.h),
                           Text(
-                            'john.doe@gmail.com',
+                            userData.email,
                             style: AppTextStyle.normalBody,
                           ),
                         ],
@@ -87,7 +102,11 @@ class ProfileTab extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context.nav.pushNamed(Routes.profileDetails, arguments: {
+                      'userData': userData,
+                    });
+                  },
                   icon: const Icon(Icons.arrow_forward_ios),
                 ),
               ],

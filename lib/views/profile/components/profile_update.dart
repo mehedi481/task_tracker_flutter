@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
@@ -10,9 +11,14 @@ import 'package:task_tracker_flutter/components/custom_button.dart';
 import 'package:task_tracker_flutter/config/app_color.dart';
 import 'package:task_tracker_flutter/config/app_images.dart';
 import 'package:task_tracker_flutter/config/app_text.dart';
+import 'package:task_tracker_flutter/controllers/profile_controller.dart/providers.dart';
+import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
+import 'package:task_tracker_flutter/models/user_model.dart';
 
+// ignore: must_be_immutable
 class ProfileUpdate extends StatefulWidget {
-  const ProfileUpdate({super.key});
+  ProfileUpdate({super.key, this.userData});
+  UserModel? userData;
 
   @override
   State<ProfileUpdate> createState() => _ProfileUpdateState();
@@ -66,6 +72,11 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                   ),
                   child: FormBuilder(
                     key: _formKey,
+                    initialValue: {
+                      'name': widget.userData!.name,
+                      'email': widget.userData!.email,
+                      'age': widget.userData!.age.toString(),
+                    },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -164,14 +175,39 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                           ),
                         ),
                         Gap(20.h),
-                        CustomButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.saveAndValidate()) {
-                              print(_formKey.currentState!.value);
-                            }
-                          },
-                          text: "Update",
-                        )
+                        Consumer(builder: (context, ref, _) {
+                          final isLoading =
+                              ref.watch(profileUpdateControllerProvider);
+                          final isImageLoading =
+                              ref.watch(profileImageUpdateControllerProvider);
+                          return isLoading || isImageLoading
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : CustomButton(
+                                  onPressed: () {
+                                    if (_formKey.currentState!
+                                        .saveAndValidate()) {
+                                      final data = _formKey.currentState!.value;
+                                      ref
+                                          .read(
+                                            profileUpdateControllerProvider
+                                                .notifier,
+                                          )
+                                          .updateProfileData(data: data)
+                                          .then((value) {
+                                        if (value) {
+                                          ref.invalidate(
+                                            profileDataControllerProvider,
+                                          );
+                                          context.nav.pop();
+                                        }
+                                      });
+                                    }
+                                  },
+                                  text: "Update",
+                                );
+                        })
                       ],
                     ),
                   ),
