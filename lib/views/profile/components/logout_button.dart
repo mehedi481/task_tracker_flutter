@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:task_tracker_flutter/config/app_constants.dart';
 import 'package:task_tracker_flutter/config/app_text.dart';
 import 'package:task_tracker_flutter/controllers/auth_controller/providers.dart';
 import 'package:task_tracker_flutter/controllers/misc/misc_provider.dart';
@@ -36,14 +34,18 @@ class LogoutButton extends ConsumerWidget {
                       .logout()
                       .then((value) {
                     if (value) {
-                      // delete auth token
-                      Box authBox = Hive.box(AppConstants.authBox);
-                      authBox.delete(AppConstants.authToken);
-                      ref.invalidate(selectedIndexProvider);
-                      context.nav.pushNamedAndRemoveUntil(
-                        Routes.logIn,
-                        (route) => false,
-                      );
+                      ref
+                          .read(databaseHelperProvider)
+                          .deleteUserToken()
+                          .then((value) {
+                        if (value != -1) {
+                          ref.invalidate(selectedIndexProvider);
+                          context.nav.pushNamedAndRemoveUntil(
+                            Routes.logIn,
+                            (route) => false,
+                          );
+                        }
+                      });
                     }
                   });
                 },

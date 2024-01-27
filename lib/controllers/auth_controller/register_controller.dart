@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:task_tracker_flutter/config/app_constants.dart';
+import 'package:task_tracker_flutter/controllers/misc/misc_provider.dart';
+import 'package:task_tracker_flutter/models/user_model.dart';
 import 'package:task_tracker_flutter/services/auth_service_provider.dart';
 
 class RegisterController extends StateNotifier<bool> {
@@ -18,8 +18,14 @@ class RegisterController extends StateNotifier<bool> {
       final response = await ref
           .read(authServiceProvider)
           .register(name: name, email: email, password: password, age: age);
-      Box authBox = Hive.box(AppConstants.authBox);
-      authBox.put(AppConstants.authToken, response.data['token']);
+
+      UserModel user = UserModel.fromJson(response.data['user']);
+      String token = response.data['token'];
+
+      // Store user data and token in SQLite database
+      await ref.read(databaseHelperProvider).insertUser(user);
+      await ref.read(databaseHelperProvider).insertUserToken(token);
+
       return true;
     } catch (e) {
       return false;

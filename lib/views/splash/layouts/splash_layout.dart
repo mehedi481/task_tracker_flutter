@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:task_tracker_flutter/config/app_constants.dart';
 import 'package:task_tracker_flutter/config/app_images.dart';
 import 'package:task_tracker_flutter/controllers/misc/misc_provider.dart';
 import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
@@ -20,26 +18,11 @@ class _SplashLayoutState extends ConsumerState<SplashLayout> {
   @override
   void initState() {
     super.initState();
-    // Box authBox = Hive.box(AppConstants.authBox);
-    // Future.delayed(const Duration(seconds: 3), () {
-    //   if (authBox.get(AppConstants.authToken) != null) {
-    //     context.nav.pushNamedAndRemoveUntil(
-    //       Routes.core,
-    //       (route) => false,
-    //     );
-    //   } else {
-    //     context.nav.pushNamedAndRemoveUntil(
-    //       Routes.logIn,
-    //       (route) => false,
-    //     );
-    //   }
-    // });
     userValidation();
   }
 
   userValidation() async {
     String? token = await ref.read(databaseHelperProvider).fetchUserToken();
-    print(token);
     Future.delayed(const Duration(seconds: 3), () {
       if (token != null) {
         context.nav.pushNamedAndRemoveUntil(

@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:task_tracker_flutter/config/app_constants.dart';
 import 'package:task_tracker_flutter/config/theme.dart';
 import 'package:task_tracker_flutter/utils/routes.dart';
 import 'package:task_tracker_flutter/utils/utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  await Hive.openBox(AppConstants.authBox);
   runApp(const ProviderScope(child: MyApp()));
 }
 

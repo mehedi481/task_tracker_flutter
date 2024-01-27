@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:task_tracker_flutter/config/app_constants.dart';
+import 'package:task_tracker_flutter/database/database_helper.dart';
 import 'package:task_tracker_flutter/utils/routes.dart';
 import 'package:task_tracker_flutter/utils/utils.dart';
 
@@ -24,19 +23,17 @@ void addApiInterceptors(Dio dio) {
   // respone handler
   dio.interceptors.add(
     InterceptorsWrapper(
-      onRequest: (options, handler) {
-        final authBox = Hive.box(AppConstants.authBox);
-        final token = authBox.get(AppConstants.authToken);
+      onRequest: (options, handler) async {
+        String? token = await DatabaseHelper.instance.fetchUserToken();
         options.headers['Authorization'] = "Bearer $token";
         handler.next(options);
       },
-      onResponse: (response, handler) {
+      onResponse: (response, handler) async {
         final message = response.data['message'];
 
         switch (response.statusCode) {
           case 401:
-            Box authBox = Hive.box(AppConstants.authBox);
-            authBox.delete(AppConstants.authToken);
+            await DatabaseHelper.instance.deleteUserToken();
             Utils.navigatorKey.currentState
                 ?.pushNamedAndRemoveUntil(Routes.logIn, (route) => false);
             Utils.showCustomSnackbar(
@@ -61,7 +58,7 @@ void addApiInterceptors(Dio dio) {
         }
         handler.next(response);
       },
-      onError: (error, handler) {
+      onError: (error, handler) async {
         switch (error.type) {
           case DioExceptionType.connectionError:
           case DioExceptionType.connectionTimeout:
@@ -82,8 +79,7 @@ void addApiInterceptors(Dio dio) {
           final statusCode = error.response!.statusCode;
           switch (statusCode) {
             case 401:
-              Box authBox = Hive.box(AppConstants.authBox);
-              authBox.delete(AppConstants.authToken);
+              await DatabaseHelper.instance.deleteUserToken();
               Utils.navigatorKey.currentState
                   ?.pushNamedAndRemoveUntil(Routes.logIn, (route) => false);
               break;

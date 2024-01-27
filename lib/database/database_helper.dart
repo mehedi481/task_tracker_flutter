@@ -1,13 +1,12 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
+import 'package:task_tracker_flutter/config/app_constants.dart';
 import 'package:task_tracker_flutter/models/user_model.dart';
 
 class DatabaseHelper {
-  static const _databaseName = "taskTracker.db";
-  static const _dbVersion = 1;
-  static const userTable = 'users';
   static const columnId = '_id';
   static const columnName = 'name';
   static const columnEmail = 'email';
@@ -29,10 +28,10 @@ class DatabaseHelper {
 
   _initDatabase() async {
     Directory dataDirectory = await getApplicationDocumentsDirectory();
-    String dbPath = path.join(dataDirectory.path, _databaseName);
+    String dbPath = path.join(dataDirectory.path, AppConstants.databaseName);
     return await openDatabase(
       dbPath,
-      version: _dbVersion,
+      version: AppConstants.dbVersion,
       onCreate: _onCreateTable,
       onUpgrade: _onUpgradeTable,
     );
@@ -40,13 +39,13 @@ class DatabaseHelper {
 
   _onCreateTable(Database db, int version) async {
     String sql = '''
-    CREATE TABLE $userTable (
+    CREATE TABLE ${AppConstants.userTable} (
       $columnAge INTEGER NOT NULL,
       $columnId STRING PRIMARY KEY,
       $columnName STRING NOT NULL,
       $columnEmail STRING NOT NULL UNIQUE,
-      $columnProfileImage STRING NOT NULL,
-      $columnToken STRING NOT NULL
+      $columnProfileImage STRING,
+      $columnToken STRING
     )
   ''';
 
@@ -60,92 +59,148 @@ class DatabaseHelper {
   }
 
   Future<int> insertUser(UserModel user) async {
-    Database db = await database;
-    return await db.insert(
-      userTable,
-      user.toJson(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    try {
+      Database db = await database;
+      final data = {
+        columnId: user.id,
+        columnName: user.name,
+        columnEmail: user.email,
+        columnAge: user.age,
+      };
+      return await db.insert(
+        AppConstants.userTable,
+        data,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (e) {
+      debugPrint('Error inserting user: $e');
+      return -1;
+    }
   }
 
   Future<UserModel?> fetchUser() async {
-    Database db = await database;
-    List<Map<String, dynamic>> result = await db.query(
-      userTable,
-    );
-    if (result.isNotEmpty) {
-      return UserModel.fromJson(result.first);
+    try {
+      Database db = await database;
+      List<Map<String, dynamic>> result = await db.query(
+        AppConstants.userTable,
+      );
+      if (result.isNotEmpty) {
+        return UserModel.fromJson(result.first);
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Error fetching user: $e');
+      return null;
     }
-    return null;
   }
 
   Future<int> deleteUser() async {
-    Database db = await database;
-    return await db.delete(userTable);
+    try {
+      Database db = await database;
+      return await db.delete(
+        AppConstants.userTable,
+      );
+    } catch (e) {
+      debugPrint('Error deleting user: $e');
+      return -1;
+    }
   }
 
   Future<int> updateUserAge(int newAge) async {
-    Database db = await database;
-    return await db.update(
-      userTable,
-      {columnAge: newAge},
-    );
+    try {
+      Database db = await database;
+      return await db.update(
+        AppConstants.userTable,
+        {columnAge: newAge},
+      );
+    } catch (e) {
+      debugPrint('Error updating user age: $e');
+      return -1;
+    }
   }
 
   Future<void> insertUserToken(String token) async {
-    Database db = await database;
-    await db.update(
-      userTable,
-      {columnToken: token},
-    );
+    try {
+      Database db = await database;
+      await db.update(
+        AppConstants.userTable,
+        {columnToken: token},
+      );
+    } catch (e) {
+      debugPrint('Error inserting user token: $e');
+    }
   }
 
   Future<String?> fetchUserToken() async {
-    Database db = await database;
-    List<Map<String, dynamic>> result = await db.query(
-      userTable,
-      columns: [columnToken],
-    );
-    if (result.isNotEmpty) {
-      return result.first[columnToken] as String?;
+    try {
+      Database db = await database;
+      List<Map<String, dynamic>> result = await db.query(
+        AppConstants.userTable,
+        columns: [columnToken],
+      );
+      if (result.isNotEmpty) {
+        return result.first[columnToken] as String?;
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Error fetching user token: $e');
+      return null;
     }
-    return null;
   }
 
   Future<int> deleteUserToken() async {
-    Database db = await database;
-    return await db.update(
-      userTable,
-      {columnToken: null},
-    );
+    try {
+      Database db = await database;
+      return await db.update(
+        AppConstants.userTable,
+        {columnToken: null},
+      );
+    } catch (e) {
+      debugPrint('Error deleting user token: $e');
+      return -1;
+    }
   }
 
   Future<void> insertUserProfileImage(String profileImage) async {
-    Database db = await database;
-    await db.update(
-      userTable,
-      {columnProfileImage: profileImage},
-    );
+    try {
+      Database db = await database;
+      await db.update(
+        AppConstants.userTable,
+        {columnProfileImage: profileImage},
+      );
+    } catch (e) {
+      debugPrint('Error inserting user profile image: $e');
+    }
   }
 
   Future<String?> fetchUserProfileImage() async {
-    Database db = await database;
-    List<Map<String, dynamic>> result = await db.query(
-      userTable,
-      columns: [columnProfileImage],
-    );
-    if (result.isNotEmpty) {
-      return result.first[columnProfileImage] as String?;
+    try {
+      Database db = await database;
+      List<Map<String, dynamic>> result = await db.query(
+        AppConstants.userTable,
+        columns: [columnProfileImage],
+      );
+      if (result.isNotEmpty) {
+        return result.first[columnProfileImage] as String?;
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Error fetching user profile image: $e');
+      return null;
     }
-    return null;
   }
 
   Future<int> deleteUserProfileImage() async {
-    Database db = await database;
-    return await db.update(
-      userTable,
-      {columnProfileImage: null},
-    );
+    try {
+      Database db = await database;
+      return await db.update(
+        AppConstants.userTable,
+        {columnProfileImage: null},
+      );
+    } catch (e) {
+      debugPrint('Error deleting user profile image: $e');
+      return -1;
+    }
   }
 
   Future<void> closeDatabase() async {

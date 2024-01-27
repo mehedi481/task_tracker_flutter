@@ -8,9 +8,8 @@ class AppConstants {
   // task based
   static const String task = '$baseUrl/task';
 
-  // Hive Box
-  static const String authBox = 'authBox';
-
-  // Auth Variable Names
-  static const String authToken = 'token';
+  // Database Constants
+  static const String databaseName = "taskTracker.db";
+  static const int dbVersion = 1;
+  static const String userTable = 'users';
 }
