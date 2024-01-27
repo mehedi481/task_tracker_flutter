@@ -16,9 +16,8 @@ class ProfileTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(profileDataControllerProvider);
-    final UserModel? userData =
-        ref.watch(profileDataControllerProvider.notifier).userData;
+    ref.watch(profileDataControllerProvider.notifier).refreshProfileData();
+    final UserModel? userData = ref.watch(profileDataControllerProvider);
 
     if (userData == null) {
       return const Center(

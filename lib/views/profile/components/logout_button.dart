@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:task_tracker_flutter/config/app_text.dart';
 import 'package:task_tracker_flutter/controllers/auth_controller/providers.dart';
 import 'package:task_tracker_flutter/controllers/misc/misc_provider.dart';
+import 'package:task_tracker_flutter/controllers/task_controller/providers.dart';
 import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
 import 'package:task_tracker_flutter/utils/routes.dart';
 
@@ -37,9 +38,13 @@ class LogoutButton extends ConsumerWidget {
                       ref
                           .read(databaseHelperProvider)
                           .deleteUserToken()
-                          .then((value) {
+                          .then((value) async {
                         if (value != -1) {
+                          // delete user
+                          await ref.read(databaseHelperProvider).deleteUser();
                           ref.invalidate(selectedIndexProvider);
+                          ref.invalidate(allTaskControllerProvider);
+                          ref.invalidate(filterTaskControllerProvider);
                           context.nav.pushNamedAndRemoveUntil(
                             Routes.logIn,
                             (route) => false,

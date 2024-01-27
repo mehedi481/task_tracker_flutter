@@ -11,7 +11,7 @@ class RegisterController extends StateNotifier<bool> {
     required String name,
     required String email,
     required String password,
-    String age = "25",
+    int age = 25,
   }) async {
     state = true;
     try {

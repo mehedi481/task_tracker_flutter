@@ -92,6 +92,7 @@ class _SignUpLayoutState extends State<SignUpLayout> {
                 ),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
+                  FormBuilderValidators.minLength(7),
                 ]),
               ),
               Gap(20.h),
@@ -110,6 +111,7 @@ class _SignUpLayoutState extends State<SignUpLayout> {
                 ),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
+                  FormBuilderValidators.minLength(7),
                   (val) {
                     if (_formKey.currentState!.fields['password']!.value !=
                         val) {

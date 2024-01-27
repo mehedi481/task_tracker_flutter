@@ -14,7 +14,7 @@ abstract class AuthRepository {
     required String name,
     required String email,
     required String password,
-    required String age,
+    required int age,
   });
 
   Future<Response> logout();
@@ -41,7 +41,7 @@ class AuthService implements AuthRepository {
     required String name,
     required String email,
     required String password,
-    required String age,
+    required int age,
   }) {
     final response =
         ref.read(apiClientProvider).post(AppConstants.register, data: {
