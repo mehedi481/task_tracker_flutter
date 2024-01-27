@@ -23,7 +23,6 @@ class AllTaskController extends StateNotifier<bool> {
         _taskList = await compute(parseTaskList, list);
         // for refreshing summary task count
         ref.invalidate(getTaskByStatusControllerProvider);
-       
       }
     } catch (e) {
       rethrow;
