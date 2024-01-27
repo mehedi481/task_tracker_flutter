@@ -1,18 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:task_tracker_flutter/controllers/misc/misc_provider.dart';
-import 'package:task_tracker_flutter/controllers/task_controller/providers.dart';
 import 'package:task_tracker_flutter/models/task_model.dart';
 import 'package:task_tracker_flutter/services/task_service_provider.dart';
 
-class AllTaskController extends StateNotifier<bool> {
+class FilterTaskController extends StateNotifier<bool> {
   final Ref ref;
-  AllTaskController(this.ref) : super(false) {
+  final DateTime selectedDate;
+  FilterTaskController(this.ref, this.selectedDate) : super(false) {
     getAllTask();
   }
 
-  List<TaskModel> _taskList = [];
-  List<TaskModel> get taskList => _taskList;
+  List<TaskModel> _filteredList = [];
+  List<TaskModel> get filteredTaskList => _filteredList;
 
   Future<void> getAllTask() async {
     state = true;
@@ -20,10 +19,15 @@ class AllTaskController extends StateNotifier<bool> {
       final response = await ref.read(taskServiceProvider).getAllTask();
       if (response.statusCode == 200) {
         List<dynamic> list = response.data['data'];
-        _taskList = await compute(parseTaskList, list);
-        // for refreshing summary task count
-        ref.invalidate(getTaskByStatusControllerProvider);
-       
+        // Assign the filtered list to _filteredList
+        List<TaskModel> temp = await compute(parseTaskList, list);
+        _filteredList = temp
+            .where((task) =>
+                task.dueDate != null &&
+                task.dueDate!.year == selectedDate.year &&
+                task.dueDate!.month == selectedDate.month &&
+                task.dueDate!.day == selectedDate.day)
+            .toList();
       }
     } catch (e) {
       rethrow;

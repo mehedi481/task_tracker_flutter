@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:task_tracker_flutter/config/app_color.dart';
 import 'package:task_tracker_flutter/config/app_text.dart';
+import 'package:task_tracker_flutter/controllers/misc/misc_provider.dart';
 import 'package:task_tracker_flutter/controllers/task_controller/providers.dart';
 import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
 import 'package:task_tracker_flutter/utils/utils.dart';
@@ -279,6 +280,8 @@ class _UpdateTaskState extends State<UpdateTask> {
                                     message: "Task successfully delete",
                                     isSuccess: true);
                                 ref.invalidate(allTaskControllerProvider);
+                                ref.invalidate(filterTaskControllerProvider(
+                                    ref.read(selectedDateProvider)));
                                 context.nav.pop();
                               }
                             });

@@ -8,6 +8,7 @@ import 'package:task_tracker_flutter/components/custom_button.dart';
 import 'package:task_tracker_flutter/config/app_color.dart';
 import 'package:task_tracker_flutter/config/app_text.dart';
 import 'package:task_tracker_flutter/controllers/auth_controller/providers.dart';
+import 'package:task_tracker_flutter/controllers/misc/misc_provider.dart';
 import 'package:task_tracker_flutter/controllers/task_controller/providers.dart';
 import 'package:task_tracker_flutter/extensions/context_less_nav.dart';
 import 'package:task_tracker_flutter/utils/utils.dart';
@@ -152,6 +153,9 @@ class _AddTaskState extends ConsumerState<AddTask> {
                                 .then((value) {
                               if (value) {
                                 ref.invalidate(allTaskControllerProvider);
+                                // for refreshing filter task list
+                                ref.invalidate(filterTaskControllerProvider(
+                                    ref.read(selectedDateProvider)));
                                 // ignore: use_build_context_synchronously
                                 context.nav.pop();
                               } else {

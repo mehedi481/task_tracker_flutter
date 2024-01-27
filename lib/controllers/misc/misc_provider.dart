@@ -5,3 +5,5 @@ final bottomTabControllerProvider =
     Provider<PageController>((ref) => PageController());
 
 final selectedIndexProvider = StateProvider<int>((ref) => 0);
+
+final selectedDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
